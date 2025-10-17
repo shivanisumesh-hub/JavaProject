@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About - RentTOgo</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     * {
       margin: 0;
@@ -13,102 +14,518 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       color: #2d3748;
       line-height: 1.6;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+      pointer-events: none;
     }
 
     .topbar {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
       padding: 1rem 2rem;
-      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
       position: sticky;
       top: 0;
       z-index: 100;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #10b981, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .topbar nav {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
     }
 
     .topbar a {
-      color: #4a5568;
+      color: white;
       text-decoration: none;
-      font-weight: 500;
-      padding: 0.5rem 1.5rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
       border-radius: 8px;
       transition: all 0.3s ease;
-      border: 1px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .topbar a:hover {
-      background: #667eea;
-      color: white;
-      border-color: #667eea;
+      background: rgba(255, 255, 255, 0.2);
       transform: translateY(-2px);
     }
 
     .container {
-      max-width: 800px;
-      margin: 4rem auto;
-      padding: 3rem;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      max-width: 1000px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .about-hero {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 4rem 3rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: slideUp 0.6s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+      animation: scaleIn 0.5s ease-out 0.2s both;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      position: relative;
+    }
+
+    .hero-icon::after {
+      content: '';
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border: 3px solid rgba(102, 126, 234, 0.3);
+      border-radius: 50%;
+      animation: ripple 2s ease-out infinite;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    .hero-icon i {
+      font-size: 3rem;
+      color: white;
     }
 
     h2 {
       font-size: 2.5rem;
       font-weight: 700;
       color: #1a202c;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
+      text-align: center;
       letter-spacing: -0.5px;
     }
 
-    h3 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: #2d3748;
-      margin-top: 2.5rem;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #e2e8f0;
+    .subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
     }
 
-    p {
+    .about-content {
       font-size: 1.05rem;
       color: #4a5568;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+      animation: slideUp 0.6s ease-out;
+    }
+
+    .feature-card:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .feature-card:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .feature-icon i {
+      font-size: 1.8rem;
+      color: white;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      font-size: 1rem;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .contact-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      animation: slideUp 0.6s ease-out 0.3s both;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1a202c;
       margin-bottom: 1rem;
-      line-height: 1.7;
+      text-align: center;
+    }
+
+    .section-subtitle {
+      text-align: center;
+      color: #6b7280;
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .contact-card {
+      background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .contact-card:hover {
+      transform: translateY(-5px);
+      border-color: #667eea;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+    }
+
+    .contact-icon-wrapper {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 2rem;
+    }
+
+    .contact-card h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1a202c;
+      margin-bottom: 0.75rem;
+    }
+
+    .contact-card a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.05rem;
+      display: block;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .contact-card a:hover {
+      color: #764ba2;
+      transform: scale(1.05);
+    }
+
+    .contact-card .contact-info {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+      margin-top: 3rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    footer p {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.8);
     }
 
     @media (max-width: 768px) {
       .container {
         margin: 2rem 1rem;
-        padding: 2rem 1.5rem;
+        padding: 0 1rem;
+      }
+
+      .about-hero {
+        padding: 2.5rem 1.5rem;
       }
 
       h2 {
         font-size: 2rem;
       }
 
+      .section-title {
+        font-size: 1.6rem;
+      }
+
       .topbar {
         padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .topbar nav {
+        gap: 0.5rem;
+      }
+
+      .topbar a {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+      }
+
+      .features-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-section {
+        padding: 2rem 1.5rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="topbar">
-    <a th:href="@{/login}">Login</a>
-  </div>
+  <header class="topbar">
+    <div class="logo">
+      <i class="fas fa-home"></i>
+      RentTOgo
+    </div>
+    <nav>
+      <a href="/">
+        <i class="fas fa-house-user"></i>
+        <span>Home</span>
+      </a>
+      <a href="#pgs">
+        <i class="fas fa-building"></i>
+        <span>PGs & Hostels</span>
+      </a>
+      <a th:href="@{/login}">
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Login</span>
+      </a>
+      <a href="#contact">
+        <i class="fas fa-envelope"></i>
+        <span>Contact</span>
+      </a>
+    </nav>
+  </header>
+
   <div class="container">
-    <h2>About RentTOgo</h2>
-    <p>RentTOgo is an initiative to simplify student accommodation booking across Kerala colleges. We provide safe, budget-friendly rooms and PGs near major colleges.</p>
-    <h3>Contact</h3>
-    <p>Email: support@rentspace.com</p>
-    <p>Phone: +91 98765 43210</p>
+    <div class="about-hero">
+      <div class="hero-icon">
+        <i class="fas fa-info-circle"></i>
+      </div>
+      <h2>About RentTOgo</h2>
+      <p class="subtitle">Your Trusted Partner in Student Accommodation</p>
+      <p class="about-content">
+        RentTOgo is an initiative to simplify student accommodation booking across Kerala colleges. 
+        We provide safe, budget-friendly rooms and PGs near major colleges, making your search for 
+        the perfect accommodation simple, fast, and stress-free. Our platform connects students with 
+        verified properties, ensuring a seamless transition to college life.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3>Verified Properties</h3>
+        <p>Every accommodation on our platform is thoroughly verified with proper documentation to ensure your safety and security.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-wallet"></i>
+        </div>
+        <h3>Budget-Friendly</h3>
+        <p>Find accommodations that fit your budget with transparent pricing and no hidden charges. Perfect for students.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">
+          <i class="fas fa-map-marker-alt"></i>
+        </div>
+        <h3>Prime Locations</h3>
+        <p>Discover PGs and hostels near major Kerala colleges with easy access to public transport and essential amenities.</p>
+      </div>
+    </div>
+
+    <div class="contact-section" id="contact">
+      <h2 class="section-title">Get in Touch</h2>
+      <p class="section-subtitle">Have questions? We're here to help you find your perfect accommodation</p>
+      
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon-wrapper">
+            <i class="fas fa-envelope" style="color: white;"></i>
+          </div>
+          <h4>Email Us</h4>
+          <a href="mailto:renttogo@gmail.com">renttogo@gmail.com</a>
+          <p class="contact-info">We'll respond within 24 hours</p>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-icon-wrapper">
+            <i class="fas fa-phone-alt" style="color: white;"></i>
+          </div>
+          <h4>Call Us</h4>
+          <a href="tel:+918800445566">+91 88004 45566</a>
+          <p class="contact-info">Mon-Sat, 9 AM - 7 PM IST</p>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-icon-wrapper">
+            <i class="fas fa-comments" style="color: white;"></i>
+          </div>
+          <h4>Live Chat</h4>
+          <a href="#" style="color: #667eea;">Start Conversation</a>
+          <p class="contact-info">Get instant help from our team</p>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <footer>
+    <p>© 2025 RentTOgo. Your trusted PG and hostel finder.</p>
+    <p style="margin-top: 8px; font-size: 0.9rem;">Making your search for PGs and hostels simple, fast, and stress-free.</p>
+  </footer>
 </body>
 </html>

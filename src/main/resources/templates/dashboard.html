@@ -2,39 +2,767 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard - RentTOgo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accommodations</title>
   <link rel="stylesheet" th:href="@{/css/style.css}">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #2d3748;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="60" fill="none"/><circle cx="30" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+      pointer-events: none;
+      z-index: 0;
+    }
+    .topbar {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      padding: 1.25rem 2rem;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .topbar a {
+      color: #4a5568;
+      text-decoration: none;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .topbar a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    .topbar a:hover::before {
+      left: 100%;
+    }
+    .topbar a:hover {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    .container {
+      max-width: 1400px;
+      margin: 3rem auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .header-section {
+      text-align: center;
+      margin-bottom: 3rem;
+      animation: fadeInDown 0.6s ease;
+    }
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    h2 {
+      font-size: 3rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+    }
+    .subtitle {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+    .filter-bar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1.5rem;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+    }
+    .filter-btn {
+      padding: 0.75rem 1.5rem;
+      border: 2px solid #e2e8f0;
+      background: white;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #1a202c;
+      font-size: 0.95rem;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      animation: fadeInUp 0.8s ease;
+    }
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 0;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+    }
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    }
+    .card-content {
+      padding: 2.5rem;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    
+    .card-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .card-right {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: center;
+    }
+    .card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card h3::before {
+      content: '🏠';
+      font-size: 1.3rem;
+    }
+    .card-description {
+      font-size: 1rem;
+      color: #2d3748;
+      margin-bottom: 0;
+      line-height: 1.8;
+      min-height: auto;
+    }
+    .card-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 0;
+    }
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1rem;
+      color: #1a202c;
+    }
+    .detail-icon {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    .detail-item b {
+      color: #2d3748;
+      font-weight: 700;
+      min-width: 70px;
+    }
+    .price-tag {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+    .status-badge {
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .available {
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+      box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+    }
+    .not-available {
+      background: linear-gradient(135deg, #fc8181, #f56565);
+      color: white;
+      box-shadow: 0 4px 15px rgba(252, 129, 129, 0.3);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: white;
+    }
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: white;
+      border-radius: 24px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .modal-header {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 2.5rem;
+      border-radius: 24px 24px 0 0;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      font-size: 2rem;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      line-height: 1;
+    }
+    .modal-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+    .modal-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .modal-title::before {
+      content: '🏠';
+      font-size: 2rem;
+    }
+    .modal-body {
+      padding: 2.5rem;
+    }
+    .modal-section {
+      margin-bottom: 2rem;
+    }
+    .modal-section:last-child {
+      margin-bottom: 0;
+    }
+    .modal-section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .modal-description {
+      font-size: 1.1rem;
+      color: #2d3748;
+      line-height: 1.8;
+      margin-bottom: 0;
+    }
+    .modal-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .modal-detail-item {
+      background: #f7fafc;
+      padding: 1.5rem;
+      border-radius: 12px;
+      border-left: 4px solid #667eea;
+    }
+    .modal-detail-label {
+      font-size: 0.85rem;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .modal-detail-value {
+      font-size: 1.2rem;
+      color: #1a202c;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .modal-price {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+    }
+    .modal-status {
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      font-weight: 700;
+      text-align: center;
+      font-size: 1.1rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .booking-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #48bb78, #38a169);
+      color: white;
+      border: none;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      box-shadow: 0 4px 20px rgba(72, 187, 120, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .booking-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(72, 187, 120, 0.4);
+      background: linear-gradient(135deg, #38a169, #2f855a);
+    }
+    .booking-btn:active {
+      transform: translateY(0);
+    }
+    .booking-btn-icon {
+      font-size: 1.5rem;
+    }
+    #bookingSection {
+      display: none;
+    }
+    #bookingSection.show {
+      display: block;
+    }
+    @media (max-width: 768px) {
+      .container {
+        margin: 2rem 1rem;
+        padding: 1rem;
+      }
+      h2 {
+        font-size: 2rem;
+      }
+      .subtitle {
+        font-size: 0.95rem;
+      }
+      .topbar {
+        padding: 1rem;
+        flex-wrap: wrap;
+      }
+      .topbar a {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+      }
+      .cards {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .card-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .filter-bar {
+        padding: 1rem;
+      }
+      .filter-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="topbar">
-    <a th:href="@{/home}">Home</a> |
-    <a th:href="@{/accommodations}">Accommodations</a> |
+    <a th:href="@{/home}">Home</a>
+    <a th:href="@{/dashboard}">Dashboard</a>
     <a th:href="@{/logout}">Logout</a>
   </div>
   <div class="container">
-    <h2>Accommodations</h2>
-    <table>
-      <thead>
-        <tr><th>Title</th><th>Location</th><th>Price</th><th>Available</th><th>Action</th></tr>
-      </thead>
-      <tbody>
-        <tr th:each="acc : ${accommodations}">
-          <td th:text="${acc.title}"></td>
-          <td th:text="${acc.location}"></td>
-          <td>₹<span th:text="${acc.pricePerMonth}"></span></td>
-          <td th:text="${acc.available}"></td>
-          <td>
-            <form th:action="@{/book}" method="post">
-              <input type="hidden" name="accId" th:value="${acc.id}"/>
-              Start: <input type="date" name="startDate" required />
-              End: <input type="date" name="endDate" required />
-              <button type="submit" th:if="${acc.available}">Book</button>
-              <span th:if="${!acc.available}">Unavailable</span>
-            </form>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="header-section">
+      <h2>Find Your Perfect Stay</h2>
+      <p class="subtitle">Browse through our curated collection of accommodations</p>
+    </div>
+    
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterCards('all')">All Properties</button>
+      <button class="filter-btn" onclick="filterCards('available')">Available</button>
+      <button class="filter-btn" onclick="filterCards('unavailable')">Not Available</button>
+    </div>
+
+    <div class="cards" id="accommodationCards">
+      <!-- Debug: Show if accommodations list is empty -->
+      <div th:if="${accommodations == null || accommodations.isEmpty()}" style="grid-column: 1/-1; text-align: center; color: white; padding: 3rem;">
+        <h3>No accommodations found in database</h3>
+        <p>Please add some accommodations first</p>
+      </div>
+      
+      <div class="card" th:each="acc : ${accommodations}" 
+           th:data-status="${acc.available ? 'available' : 'unavailable'}"
+           th:data-id="${acc.id}"
+           th:data-title="${acc.title}"
+           th:data-description="${acc.description}"
+           th:data-location="${acc.location}"
+           th:data-price="${acc.pricePerMonth}"
+           th:data-available="${acc.available}"
+           onclick="openModalFromCard(this)">
+        <div class="card-content">
+          <div class="card-left">
+            <h3 th:text="${acc.title}">Sample Title</h3>
+            <p class="card-description" th:text="${acc.description}">Sample Description</p>
+            
+            <div class="card-details">
+              <div class="detail-item">
+                <span class="detail-icon">📍</span>
+                <b>Location:</b> <span th:text="${acc.location}">Sample Location</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-right">
+            <div class="price-tag">
+              ₹<span th:text="${acc.pricePerMonth}">0</span>/month
+            </div>
+            
+            <div th:class="${acc.available ? 'status-badge available' : 'status-badge not-available'}" 
+                 th:text="${acc.available ? 'Available Now' : 'Not Available'}">
+              Status
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <div class="empty-state-icon">🔍</div>
+      <h3>No properties found</h3>
+      <p>Try adjusting your filters</p>
+    </div>
   </div>
+
+  <!-- Modal -->
+  <div class="modal" id="accommodationModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <h2 class="modal-title" id="modalTitle"></h2>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <div class="modal-section-title">📝 Description</div>
+          <p class="modal-description" id="modalDescription"></p>
+        </div>
+        
+        <div class="modal-section">
+          <div class="modal-section-title">📋 Property Details</div>
+          <div class="modal-detail-grid">
+            <div class="modal-detail-item">
+              <div class="modal-detail-label">Location</div>
+              <div class="modal-detail-value">
+                📍 <span id="modalLocation"></span>
+              </div>
+            </div>
+            <div class="modal-detail-item">
+              <div class="modal-detail-label">Property ID</div>
+              <div class="modal-detail-value">
+                🏷️ #<span id="modalId"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="modal-section">
+          <div class="modal-section-title">💰 Pricing</div>
+          <div class="modal-price">
+            ₹<span id="modalPrice"></span> / month
+          </div>
+        </div>
+        
+        <div class="modal-section">
+          <div class="modal-section-title">✅ Availability</div>
+          <div class="modal-status" id="modalStatus"></div>
+        </div>
+        
+        <div class="modal-section" id="bookingSection">
+          <button class="booking-btn" onclick="handleBooking()">
+            <span class="booking-btn-icon">🔒</span>
+            Book Now & Proceed to Payment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function filterCards(filter) {
+      const cards = document.querySelectorAll('.card');
+      const buttons = document.querySelectorAll('.filter-btn');
+      const emptyState = document.getElementById('emptyState');
+      let visibleCount = 0;
+      
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      cards.forEach(card => {
+        const status = card.getAttribute('data-status');
+        if (filter === 'all' || status === filter) {
+          card.style.display = 'block';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      
+      emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+
+    function openModalFromCard(cardElement) {
+      const id = cardElement.getAttribute('data-id');
+      const title = cardElement.getAttribute('data-title');
+      const description = cardElement.getAttribute('data-description');
+      const location = cardElement.getAttribute('data-location');
+      const price = cardElement.getAttribute('data-price');
+      const available = cardElement.getAttribute('data-available') === 'true';
+      
+      openModal(id, title, description, location, price, available);
+    }
+
+    function openModal(id, title, description, location, price, available) {
+      const modal = document.getElementById('accommodationModal');
+      const bookingSection = document.getElementById('bookingSection');
+      
+      document.getElementById('modalId').textContent = id;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDescription').textContent = description;
+      document.getElementById('modalLocation').textContent = location;
+      document.getElementById('modalPrice').textContent = Number(price).toLocaleString();
+      
+      const statusElement = document.getElementById('modalStatus');
+      if (available) {
+        statusElement.textContent = 'Available Now';
+        statusElement.className = 'modal-status available';
+        bookingSection.classList.add('show');
+      } else {
+        statusElement.textContent = 'Not Available';
+        statusElement.className = 'modal-status not-available';
+        bookingSection.classList.remove('show');
+      }
+      
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      
+      // Store current accommodation details for booking
+      window.currentAccommodation = { id, title, price };
+    }
+
+    function handleBooking() {
+      if (window.currentAccommodation) {
+        // Get current date and date 1 month from now
+        const today = new Date();
+        const nextMonth = new Date(today);
+        nextMonth.setMonth(nextMonth.getMonth() + 1);
+        
+        const startDate = today.toISOString().split('T')[0];
+        const endDate = nextMonth.toISOString().split('T')[0];
+        
+        // Create a form and submit it (since /book expects POST with dates)
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/book';
+        
+        const accIdInput = document.createElement('input');
+        accIdInput.type = 'hidden';
+        accIdInput.name = 'accId';
+        accIdInput.value = window.currentAccommodation.id;
+        form.appendChild(accIdInput);
+        
+        const startDateInput = document.createElement('input');
+        startDateInput.type = 'hidden';
+        startDateInput.name = 'startDate';
+        startDateInput.value = startDate;
+        form.appendChild(startDateInput);
+        
+        const endDateInput = document.createElement('input');
+        endDateInput.type = 'hidden';
+        endDateInput.name = 'endDate';
+        endDateInput.value = endDate;
+        form.appendChild(endDateInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('accommodationModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('accommodationModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  </script>
 </body>
 </html>
