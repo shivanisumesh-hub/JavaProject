@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Accommodations</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <div class="topbar">
+    <a th:href="@{/home}">Home</a> |
+    <a th:href="@{/dashboard}">Dashboard</a> |
+    <a th:href="@{/logout}">Logout</a>
+  </div>
+  <div class="container">
+    <h2>All Accommodations</h2>
+    <div class="cards">
+      <div class="card" th:each="acc : ${accommodations}">
+        <h3 th:text="${acc.title}"></h3>
+        <p th:text="${acc.description}"></p>
+        <p><b>Location:</b> <span th:text="${acc.location}"></span></p>
+        <p><b>Price:</b> ₹<span th:text="${acc.pricePerMonth}"></span>/month</p>
+        <p th:if="${acc.available}">Available</p>
+        <p th:if="${!acc.available}">Not Available</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

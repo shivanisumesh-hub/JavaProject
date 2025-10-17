@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - RentTOgo</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <div class="topbar">
+    <a th:href="@{/home}">Home</a> |
+    <a th:href="@{/accommodations}">Accommodations</a> |
+    <a th:href="@{/logout}">Logout</a>
+  </div>
+  <div class="container">
+    <h2>Accommodations</h2>
+    <table>
+      <thead>
+        <tr><th>Title</th><th>Location</th><th>Price</th><th>Available</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="acc : ${accommodations}">
+          <td th:text="${acc.title}"></td>
+          <td th:text="${acc.location}"></td>
+          <td>₹<span th:text="${acc.pricePerMonth}"></span></td>
+          <td th:text="${acc.available}"></td>
+          <td>
+            <form th:action="@{/book}" method="post">
+              <input type="hidden" name="accId" th:value="${acc.id}"/>
+              Start: <input type="date" name="startDate" required />
+              End: <input type="date" name="endDate" required />
+              <button type="submit" th:if="${acc.available}">Book</button>
+              <span th:if="${!acc.available}">Unavailable</span>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

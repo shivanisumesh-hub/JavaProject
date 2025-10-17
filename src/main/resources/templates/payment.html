@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+  <div class="topbar">
+    <a th:href="@{/dashboard}">Dashboard</a> | <a th:href="@{/logout}">Logout</a>
+  </div>
+  <div class="container">
+    <h2>Payment for Booking</h2>
+    <div th:if="${booking != null}">
+      <p><b>Accommodation:</b> <span th:text="${booking.accommodation.title}"></span></p>
+      <p><b>From:</b> <span th:text="${booking.startDate}"></span> <b>To:</b> <span th:text="${booking.endDate}"></span></p>
+      <p><b>Amount (one month):</b> ₹<span th:text="${booking.accommodation.pricePerMonth}"></span></p>
+      <form th:action="@{/payment}" method="post">
+        <input type="hidden" name="bookingId" th:value="${booking.id}" />
+        <label>Amount to Pay:</label>
+        <input type="number" step="0.01" name="amount" th:value="${booking.accommodation.pricePerMonth}" required />
+        <button type="submit">Pay Now (simulate)</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
